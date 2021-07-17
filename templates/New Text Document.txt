@@ -1,0 +1,24 @@
+@auth.route('/register', methods=['GET', 'POST'])
+def register():
+    """
+    Handle requests to the /register route
+    Add an employee to the database through the registration form
+    """
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        employee = Employee(
+                            emp_number=form.emp_number.data,
+                            email=form.email.data,
+                            username=form.username.data,
+                            emp_name=form.emp_name.data,
+                            password=form.password.data)
+        project=form.project.data  #an instance of Project Class
+        subproject=form.subproject.data #an instance of SubProject Class
+        project.pro_subproject.append(subproject) 
+        project.pro_employee.append(employee)
+        # add employee to the database
+        db.session.add(employee)
+        db.session.add(subproject)
+        db.session.add(project)
+        db.session.commit()
+        flash('You have registered successfully. You can now log in.')
